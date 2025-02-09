@@ -1,11 +1,13 @@
 [Unit]
-Description=Mac-like-automatic-brightness  as service
+Description=Mac-like-automatic-brightness as service
+After=iio-sensor-proxy.service
 
 [Service]
 Type=simple
 Restart=on-failure
 RestartSec=5s
 
+ExecStartPre=/bin/bash -c "sleep 10"
 ExecStart=/usr/local/bin/AutomaticBrightness.sh
 
 [Install]

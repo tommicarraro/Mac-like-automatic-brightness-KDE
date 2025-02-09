@@ -24,7 +24,7 @@ LightSensorMin=1
 LightSensorMax=169
 
 # Speed of the screen refresh rate in Hz
-Frequency=60
+Frequency=60 #TODO: Get Current Screen Frequency automatically
 
 # These variables are automatically calculated based on the Frequency of your screen
 # Feel to change them if you know what you are doing
@@ -36,11 +36,8 @@ AnimationDelay=$(echo "scale=4; 1 / $Frequency" | bc)
 
 ###### END EDIT ######
 
-# Set the priority of the current script
-priority=19 # Priority level , 0 = regular app , 19 = very much background app
-
-# Set the priority of the current script
-renice "$priority" "$$"
+# Set the priority of the current script (change the number):  0 = regular app , 19 = very much background app
+renice "19" "$$"
 
 # Get screen max brightness value
 MaxScreenBrightness=$(find -L /sys/class/backlight -maxdepth 2 -name "max_brightness" 2>/dev/null | grep "max_brightness" | xargs cat)
