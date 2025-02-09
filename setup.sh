@@ -20,29 +20,31 @@ echo "Setting up AutomaticBrightness.sh as a service..."
 
 echo "Calibrating Light Sensor Scale..."
 
-LSensorPath=$(find -L /sys/bus/iio/devices -maxdepth 2  -name "in_illuminance_raw" 2>/dev/null | grep "in_illuminance_raw")
-
-MaxScreenBrightness=$(find -L /sys/class/backlight -maxdepth 2 -name "max_brightness" 2>/dev/null | grep "max_brightness" | xargs cat)
+LightSensorPath=$(find -L /sys/bus/iio/devices -maxdepth 2  -name "in_illuminance_raw" 2>/dev/null | grep "in_illuminance_raw")
 
 echo "Put your sensor in a bright light (outside works best)"
 read -p "Press Enter to continue..."
 
-Smax=$(cat $LSensorPath)
+LightSensorMax=$(cat $LightSensorPath)
 
-Scale=$(echo "scale=2; $MaxScreenBrightness / $Smax" | bc)
+echo "Saving Light Sensor Max: $LightSensorMax"
 
-Final="SensorToDisplayScale=$Scale"
+echo "Put your sensor in a dark light (cover the sensor with hand works best)"
+read -p "Press Enter to continue..."
 
-awk -v new_phrase="$Final" '/SensorToDisplayScale=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
+LightSensorMin=$(cat $LightSensorPath)
 
-TempSteps=($MaxScreenBrightness / 60)
-if [[ TempSteps -lt 17 ]]
-then
-    Steps=$($MaxScreenBrightness / 16)
-    NewStep="LevelSteps=$Steps"
+CurrentUser=$(whoami)
 
-    awk -v new_phrase="$NewStep" '/LevelSteps=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
-fi
+echo "Saving Light Sensor Min: $LightSensorMin"
+
+awk -v new_phrase="LightSensorMax=$LightSensorMax" '/LightSensorMax=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
+awk -v new_phrase="LightSensorMin=$LightSensorMin" '/LightSensorMin=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
+awk -v new_phrase="User=$CurrentUser" '/User=/{ print new_phrase; next } 1' AutomaticBrightness.sh  > temp && mv temp AutomaticBrightness.sh
+
+echo "Stopping AB service..."
+sudo systemctl kill AB
+
 
 echo "Cloning AutomaticBrighness.sh..."
 sudo cp AutomaticBrightness.sh /usr/local/bin/AutomaticBrightness.sh
@@ -53,6 +55,7 @@ sudo cp AB.service /etc/systemd/system/AB.service
 
 
 echo "Startin Service..."
+sudo systemctl daemon-reload
 sudo systemctl enable AB
 sudo systemctl start AB
 
