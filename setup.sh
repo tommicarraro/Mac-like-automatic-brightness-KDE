@@ -1,5 +1,13 @@
 #!/bin/bash
-#
+
+# Check if the script is being run as root and exit if it is
+# Needed to get the current user
+if [ "$EUID" -eq 0 ]
+  then echo "Do not run this script as root"
+  exit
+fi
+
+
 case $1 in
         -u) echo "Updading Mac-like-automatic-brightness..."
           echo "Stopping AB service..."
@@ -58,6 +66,3 @@ echo "Startin Service..."
 sudo systemctl daemon-reload
 sudo systemctl enable AB
 sudo systemctl start AB
-
-
-
