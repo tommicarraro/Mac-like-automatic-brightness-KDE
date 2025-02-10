@@ -12,11 +12,12 @@ A simple script to provide a "Mac" like automatic brightness adjustemnt/ animati
 
 ## TODO:
 
-[] Automatically get refresh rate of display
-[] Optimize the code for fast change: the brightness change is too slow
-[] Keyboard backlight: improve the transition like for the screen
-[] Keyboard backlight: automatically get paths and variables
-[] Add support for other desktop environments
+- [ ] Automatically get refresh rate of displa
+- [ ] Optimize the code for fast change: the brightness change is too slow
+- [ ] Keyboard backlight: improve the transition like for the screen
+- [ ] Keyboard backlight: automatically get paths and variables
+- [ ] Create a custom curve and do not change linearly
+- [ ] Add support for other desktop environments
 
 ## Now as a system service
 
@@ -55,6 +56,9 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 
 `./AutomaticBrightness.sh | Defualt running mode of script`
 
+### Removed/Deprecated
+The following commands are removed since not needed anymore
+
 `./AutomaticBrightness.sh -i [NUMBER] | Increase the offset your brightness sensors raw reading `
 
 `./AutomaticBrightness.sh -d [NUMBER] | Decrease the offset your brightness sensors raw reading `
@@ -64,25 +68,34 @@ Your sensor has a diffrent range thant the 12th Gen Intel Framework laptop senso
 - Changing the offset of your backlight while the service is running is one way you increase or decease your screen bightness but keep the automatic adjustments when the lighting changes
 
 ## Configuring
+`User` The name of the current user. Needed to communicate over DBUS to the Powerdevil of KDE. Automatically adjusted by the setup script
 
-`Light Change` The percent of light change needed to be seen by the sensor for it to change the screen brightness
+`DesktopEnvironment` Needed to know how to communicate the screen brightness change
+
+`KeyboardBacklightControl` Enable keyboard backlight control (true/false)
+
+`LightSensorThresholdChange` The percent of light change needed to be seen by the sensor for it to change the screen brightness
 
 `SensorDelay` Time in seconds the script will wait to check the sensor for a luminess change after the animation (LevelSteps \* AnimationDelay)
 
-`SensorToDisplayScale` The ratio from sensor to screen brighness, recommended minimum 24 for 12th gen framework laptops. Increasing the value will give a brighter screen for the amount of light in the room/ enviroment
+`LightSensorMin` Minimum light allowed from the light sensor. Automatically adjusted by the setup script (int)
 
-`LevelSteps` Sets amount of brightness steps, recomended to match refeshrate
+`LightSensorMax` Maximum light allowed from the light sensor. Automatically adjusted by the setup script (int)
 
-`AnimationDelay` Speed of the brightness animation(delay between each step), recomended screen refreshrate in seconds (0.16 of 60Hz)
+`Frequency` Current Screen Frequency, used for the animation.
 
-`MinimunBrightness` The minimum screen brightness, recomended minumim 001 so the backlight dosn't turn off
+`MinScreenBrightness` The minimum screen brightness, recomended minumim 1 so the backlight dosn't turn off
 
 ### Run` setup.sh -u` to update the installed script and service
 
 ~~ Other things to note but shouldn't have to adjust
 
-`Light` The file where your lightsensor has its current value
+`LevelSteps` Sets amount of brightness steps, recomended to match refeshrate. Automaticallt calculated.
 
-`CurrentBirghtness` The file where your screen stores its current brightness
+`AnimationDelay` Speed of the brightness animation(delay between each step), recomended screen refreshrate in seconds (0.16 of 60Hz). Automatically calculated.
+
+`LightSensorPath` The file where your lightsensor has its current value
+
+`ScreenBrightnessPath` The file where your screen stores its current brightness
 
 `MaxScreenBrightness` The highest value your screen supports, check `/sys/class/backlight/intel_backlight/max_brightness` on framework laptops
