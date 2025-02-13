@@ -4,7 +4,7 @@
 ###### VARIABLES ######
 ###### EDIT HERE ######
 # User that will be used to change the brightness
-User=""
+User=
 
 # Desktop Environment
 DesktopEnvironment="KDE"
@@ -18,10 +18,10 @@ LightSensorThresholdChange=10
 #How often should the sensor be checked (in seconds)
 SensorDelay=5
 # Minimum Brightness 
-LightSensorMin=1
+LightSensorMin=0
 
 # Maximum Brightness
-LightSensorMax=169
+LightSensorMax=900
 
 # Speed of the screen refresh rate in Hz
 Frequency=60 #TODO: Get Current Screen Frequency automatically
@@ -74,9 +74,9 @@ light_sensor_check() {
     if [[ $LightSensorCurrent -gt $LightThresholdTriggerMax ]] || [[ $LightSensorCurrent -lt $LightThresholdTriggerMin ]]
     then
         return 0
-    else
-        return 1
     fi
+    return 1
+    
 }
 
 # Function to change the brightness of the screen
@@ -92,12 +92,12 @@ screen_brightness_animation() {
         then
             # Set the new brightness value using sysfs which is faster than qdbus-qt5
             echo $ScreenBrightnessSet > $MaxScreenBrightness
-            exit 0
+            return 0
         elif [[ $ScreenBrightnessSet -lt $MinScreenBrightness ]]
         then
             # Set the new brightness value using sysfs which is faster than qdbus-qt5
             echo $ScreenBrightnessSet > $MinScreenBrightness
-            exit 0
+            return 0
         fi
         # Set the new brightness value using sysfs which is faster than qdbus-qt5
         echo $ScreenBrightnessSet > $ScreenBrightnessPath

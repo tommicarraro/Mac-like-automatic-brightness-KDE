@@ -13,7 +13,7 @@ A simple script to provide a "Mac" like automatic brightness adjustemnt/ animati
 ## TODO:
 
 [] Automatically get refresh rate of display
-[] Optimize the code for fast change: the brightness change is too slow
+[] Optimize the code for fast change: the brightness change is too slow, too many subshells
 [] Keyboard backlight: improve the transition like for the screen
 [] Keyboard backlight: automatically get paths and variables
 [] Add support for other desktop environments
